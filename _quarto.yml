@@ -1,0 +1,20 @@
+project:
+  type: website
+
+website:
+  title: "ResearchSite"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - quakes.qmd
+
+format:
+  html:
+    theme: simplex
+    css: styles.css
+    toc: true
+
+editor: visual
+

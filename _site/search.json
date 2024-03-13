@@ -1,0 +1,37 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ResearchSite",
+    "section": "",
+    "text": "This is the course website for the EL Research Team"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "quakes.html",
+    "href": "quakes.html",
+    "title": "Recent Earthquakes in Aotearoa New Zealand",
+    "section": "",
+    "text": "$icon\n[1] \"stopwatch\"\n\n$color\n[1] \"primary\"\n\n$value\n[1] 28\n\n\n\n\n$icon\n[1] \"activity\"\n\n$color\n[1] \"secondary\"\n\n$value\n[1] 0\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLast 10 Earthquakes\n\n\nMagnitude\n\n\nLocation\nDepth\n\n\n\n\n3.4\nYesterday\n09:36 AM\n25 km east of Te Kaha\n64 km\n\n\n3.8\n2 days ago\n04:36 PM\n40 km south-east of Tolaga Bay\n27 km\n\n\n2.4\n2 days ago\n02:45 PM\n10 km south-west of Dannevirke\n10 km\n\n\n2.9\n3 days ago\n11:40 AM\n20 km south-east of Lower Hutt\n21 km\n\n\n2.5\n3 days ago\n05:31 AM\nWithin 5 km of Oamaru\n4 km\n\n\n3.0\n4 days ago\n03:30 AM\n15 km north-east of Hanmer Springs\n5 km\n\n\n2.1\n6 days ago\n02:12 PM\n5 km east of Porangahau\n12 km\n\n\n2.6\n7 days ago\n10:43 PM\nWithin 5 km of Masterton\n14 km\n\n\n2.6\n7 days ago\n10:11 PM\n5 km west of Tolaga Bay\n24 km\n\n\n2.9\n7 days ago\n01:45 PM\n5 km east of Hastings\n26 km\n\n\n\nRetrieved from the GeoNet API at 2024/03/13 13:33 NZDT"
+  },
+  {
+    "objectID": "quakes.html#column",
+    "href": "quakes.html#column",
+    "title": "Recent Earthquakes in Aotearoa New Zealand",
+    "section": "",
+    "text": "$icon\n[1] \"stopwatch\"\n\n$color\n[1] \"primary\"\n\n$value\n[1] 28\n\n\n\n\n$icon\n[1] \"activity\"\n\n$color\n[1] \"secondary\"\n\n$value\n[1] 0\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLast 10 Earthquakes\n\n\nMagnitude\n\n\nLocation\nDepth\n\n\n\n\n3.4\nYesterday\n09:36 AM\n25 km east of Te Kaha\n64 km\n\n\n3.8\n2 days ago\n04:36 PM\n40 km south-east of Tolaga Bay\n27 km\n\n\n2.4\n2 days ago\n02:45 PM\n10 km south-west of Dannevirke\n10 km\n\n\n2.9\n3 days ago\n11:40 AM\n20 km south-east of Lower Hutt\n21 km\n\n\n2.5\n3 days ago\n05:31 AM\nWithin 5 km of Oamaru\n4 km\n\n\n3.0\n4 days ago\n03:30 AM\n15 km north-east of Hanmer Springs\n5 km\n\n\n2.1\n6 days ago\n02:12 PM\n5 km east of Porangahau\n12 km\n\n\n2.6\n7 days ago\n10:43 PM\nWithin 5 km of Masterton\n14 km\n\n\n2.6\n7 days ago\n10:11 PM\n5 km west of Tolaga Bay\n24 km\n\n\n2.9\n7 days ago\n01:45 PM\n5 km east of Hastings\n26 km\n\n\n\nRetrieved from the GeoNet API at 2024/03/13 13:33 NZDT"
+  },
+  {
+    "objectID": "quakes.html#column-1",
+    "href": "quakes.html#column-1",
+    "title": "Recent Earthquakes in Aotearoa New Zealand",
+    "section": "Column",
+    "text": "Column"
+  }
+]
