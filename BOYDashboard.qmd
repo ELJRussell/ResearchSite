@@ -1,0 +1,73 @@
+---
+title: "School BOY"
+format: 
+  dashboard: 
+    scrolling: true
+execute:
+  echo: FALSE
+---
+
+```{r}
+library(tidyverse)
+library(jsonlite)
+library(scales)
+load("walkthrough3.RData")
+colorsused <- c("#4d87f6", "#cbdaf9", "#910000")
+colorstext <- c("#000000","#000000","#FFFFFF")
+```
+
+# Structure
+
+## **District Wide Results** {.fill}
+
+```{r}
+walkthrough3Overall %>% filter(counts!=0 & label=="Structure") %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+## School-Wide Results {.tabset}
+
+### School A
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Structure" & school.id==4974) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+### School B
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Structure" & school.id==4948) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+### School C
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Structure" & school.id==4920) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+# Management
+
+## **District Wide Results** {.fill}
+
+```{r}
+walkthrough3Overall %>% filter(counts!=0 & label=="Management") %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+## School-Wide Results {.tabset}
+
+### School A
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Management" & school.id==4974) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+### School B
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Management" & school.id==4948) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```
+
+### School C
+
+```{r}
+walkthrough3 %>% filter(counts!=0 & label=="Management" & school.id==4920) %>% ggplot(aes(fill=field, x=reorder(subtext,desc(subtext)),y=counts,color=field))+geom_bar(position="fill",stat="identity",color="black")+coord_flip()+theme(axis.title=element_blank(),plot.title=element_text(size=10,face="italic",hjust=.5),axis.text=element_text(size=10))+scale_color_manual(values=colorsused,aesthetics=c("fill"),drop=FALSE)+scale_color_manual(values=colorstext,aesthetics=c("color"),drop=FALSE)+scale_y_continuous(labels=percent)+geom_text(aes(label=counts),position=position_fill(vjust = .5),show.legend=FALSE)+scale_x_discrete(labels = function(x) str_wrap(x, width = 60))
+```

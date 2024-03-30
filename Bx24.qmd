@@ -1,0 +1,189 @@
+---
+title: "Bronx 11 Partnership Conditions"
+author: "John Russell"
+format: 
+  revealjs:
+    embed-resources: true
+    logo: ELEducationLogo-Crimson-Preferred.png
+execute:
+  echo: FALSE
+  warning: FALSE
+  message: FALSE
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(gt)
+library(ELplot)
+library(DT)
+library(extrafont)
+loadfonts()
+load("24Survey.RData")
+```
+
+##  {.smaller data-menu-title="Elementary School Implementation"}
+
+```{r}
+survey2Bronxelementary <- survey2 |> 
+  filter(school_or_district_name_organized_alphabetically=="Bronx District 11" & x3_5!="Not currently implementing") %>%
+  select(school_or_district_name_organized_alphabetically,
+         team,
+         `Lowest Grade`:`Highest Grade`,
+         modules_k_2:x3_5,
+         skills_block_k_2:all_block_3_5, if_the_school_is_modifying_any_of_the_curriculum_products_listed_above_in_what_ways_are_they_modifying) |> 
+  mutate(curriculum_use=case_when(!modules_k_2 %in% c("Not currently implementing","Not currently implementing, but interested") & !x3_5 %in% c("Not currently implementing","Not currently implementing, but interested") ~ TRUE,
+                                 .default=FALSE))
+survey2Bronxmiddle <- survey2 |> 
+  filter(school_or_district_name_organized_alphabetically=="Bronx District 11" & x6_8!="Not currently implementing") %>%
+  select(school_or_district_name_organized_alphabetically,
+         team,
+         x6_8, if_the_school_is_modifying_any_of_the_curriculum_products_listed_above_in_what_ways_are_they_modifying) |>
+  mutate(curriculum_use=case_when(!x6_8 %in% c("Not currently implementing","Not currently implementing, but interested") ~ TRUE,
+                                 .default=FALSE))
+```
+
+```{r}
+#| out.width: '100%'
+#| fig.align: 'center'
+survey2Bronxelementary  |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Modules k 2`:`X3 5`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don�\u0080\u0099t know if they are using this product")),
+         Value=case_when(is.na(Value) ~ "I don't know if they are using this product",
+                         .default=Value),
+         Value=factor(Value,levels=c("I don't know if they are using this product",
+                                     "Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum")),
+         Component=case_when(Component=="Modules k 2" ~ "K-2 Modules",
+                             Component=="X3 5" ~ "3-5 Modules"),
+         Component=fct_inorder(Component)) %>%
+  ggplot(aes(x=fct_rev(Value),fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=2) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Elementary Partners in Bx11",
+       subtitle="Module implementation, as rated by coaches",
+       caption="John Russell, EL Education") +
+  el_theme() +
+  scale_fill_manual(values=c("#c7c7c7","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+##  {.smaller data-menu-title="Middle School Implementation"}
+
+```{r}
+#| out.width: '100%'
+#| fig.align: 'center'
+survey2Bronxmiddle  |> 
+  clean_names(case="sentence") |> 
+  mutate(Value=factor(`X6 8`,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don�\u0080\u0099t know if they are using this product")),
+         Value=case_when(is.na(Value) ~ "I don't know if they are using this product",
+                         .default=Value),
+         Value=factor(Value,levels=c("I don't know if they are using this product",
+                                     "Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum")))  |> 
+  ggplot(aes(x=fct_rev(Value),fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white',
+             size = 10,
+             aes(label = ..count..),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Middle School Partners in Bx11",
+       subtitle="Module implementation, as rated by coaches",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+## Modifications Table
+```{r}
+survey2 |> 
+  filter(school_or_district_name_organized_alphabetically=="Bronx District 11" &
+           !is.na(if_the_school_is_modifying_any_of_the_curriculum_products_listed_above_in_what_ways_are_they_modifying) &
+           !(if_the_school_is_modifying_any_of_the_curriculum_products_listed_above_in_what_ways_are_they_modifying %in% c("N/A","n/a","na"))) |>
+  select(if_you_selected_i_dont_see_my_partner_on_this_list_please_enter_the_partner_below,
+         modules_k_2:x6_8, if_the_school_is_modifying_any_of_the_curriculum_products_listed_above_in_what_ways_are_they_modifying) |> 
+  arrange(if_you_selected_i_dont_see_my_partner_on_this_list_please_enter_the_partner_below) |>
+  clean_names(case="sentence") |>
+  datatable(options=list(autoWidth=TRUE, paging=FALSE, scrollY=390),
+            colnames=c('School','K-2','3-5','6-8', 'Ways Modifying')) |> 
+  formatStyle(columns = c(1, 2, 3, 4, 5), fontSize = '50%')
+  
+```
+
+##  {.smaller data-menu-title="High Implementation Practices"}
+
+```{r}
+#| out.width: '100%'
+#| fig.height: 7
+#| fig.align: 'center'
+survey2  |>
+  filter(school_or_district_name_organized_alphabetically=="Bronx District 11") |>
+  select(strategic_planning_at_the_school_level_focused_on_the_school_s_workplan,continuous_improvement_for_equity_grounded_in_the_implementation_review,leadership_team_structure_that_cultivates_a_positive_culture_and_promotes_shared_leadership,use_of_teacher_and_peer_feedback_to_iterate_upon_and_satisfy_the_authenticity_complexity_and_craftsmanship_attributes_of_high_quality_work,learning_expeditions_as_an_extension_of_ela_curriculum,preparation_and_submission_of_student_work_to_models_of_excellence) |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Strategic planning at the school level focused on the school s workplan`:`Preparation and submission of student work to models of excellence`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("1: Not currently using, with no interest in using",
+                                     "2: Not currently using, but interested in learning how to use",
+                                     "3: Beginning to use or using with some issues",
+                                     "4: Using, with some mastery",
+                                     "5: Using, with mastery")),
+         Component=fct_inorder(Component)) %>%
+  mutate(Component=case_when(Component=="Strategic planning at the school level focused on the school s workplan" ~ "Strategic planning at the school level focused on the school's workplan",
+                             Component=="Learning expeditions as an extension of ela curriculum" ~ "Learning expeditions as an extension of ELA curriculum",
+                             .default=Component)) |>
+  mutate(Component=str_wrap(Component, width = 30)) |> 
+  ggplot(aes(x=Value, fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=3) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 33)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Practices of Interest",
+       subtitle="Practices rated by EL coaches as a part of yearly Partnership Conditions survey",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=12),
+                     axis.text=element_text(size=10)) +
+  coord_flip()
+  
+```
