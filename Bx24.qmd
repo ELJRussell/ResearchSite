@@ -88,6 +88,7 @@ survey2Bronxelementary  |>
   coord_flip()
   
 ```
+
 ##  {.smaller data-menu-title="Middle School Implementation"}
 
 ```{r}
@@ -129,7 +130,9 @@ survey2Bronxmiddle  |>
   coord_flip()
   
 ```
+
 ## Modifications Table
+
 ```{r}
 survey2 |> 
   filter(school_or_district_name_organized_alphabetically=="Bronx District 11" &
