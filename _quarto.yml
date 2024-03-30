@@ -8,8 +8,8 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - Progress Monitoring - Districts.qmd
-      - Research Insights.qmd
+      - ProgressMonitoring_Districts.qmd
+      - ResearchInsights.qmd
 
 format:
   html:
