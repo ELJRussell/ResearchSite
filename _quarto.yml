@@ -8,13 +8,17 @@ website:
       - href: index.qmd
         text: Home
       - about.qmd
-      - quakes.qmd
+      - Progress Monitoring - Districts.qmd
+      - Research Insights.qmd
 
 format:
   html:
     theme: simplex
     css: styles.css
     toc: true
+
+execute:
+  freeze: auto
 
 editor: visual
 

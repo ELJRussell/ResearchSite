@@ -1,0 +1,634 @@
+---
+title: "Efforts to Understand Implementation"
+subtitle: "Highlighting the <b>SY 23-24 Partnership Conditions Survey</b>"
+author: "John Russell"
+format: 
+  revealjs:
+    embed-resources: true
+    logo: ELEducationLogo-Crimson-Preferred.png
+execute:
+  echo: FALSE
+  warning: FALSE
+  message: FALSE
+---
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(gt)
+library(ELplot)
+library(DT)
+library(extrafont)
+loadfonts()
+load("24Survey.RData")
+```
+
+## The principles of Improvement Science
+
+::: columns
+::: {.column width="75%"}
+3.  *See the system that produces the current outcomes.*
+4.  *We cannot improve at scale what we cannot measure.*
+:::
+
+::: {.column width="25%"}
+![](Bryk.jpg)
+:::
+:::
+
+::: notes
+I want to ground this work in our texts on improvement science. In particular, in the idea that a first step in understanding our impact is that we must understand the nature of our partnerships. While the work that is being shared is focused on a survey that is applicable to our full model school partners, the same principles apply to our work with districts and other partners. We must understand the system that produces the current outcomes, and we must measure that system in order to improve it.
+:::
+
+## Where we are currently with implementation questions
+
+::: fragment
+```{mermaid}
+%%| mermaid-format: png
+flowchart LR
+    A[Research Team] -.-> E(Salesforce - No Answer)
+    style A fill:#c6123f,color:#fff
+    A -.-> F(Finds a sheet in Google Drive... Is it accurate?)
+    A <--> B{Managing Director}
+    G <--> C(Coach)
+    G <--> D(Associate)
+    B <--> G(Director)
+```
+:::
+
+::: notes
+To give a small but not atypical case. If someone reaches out to the research team to ask about impact in a partner for, say, a board meeting, we take a few steps to try to find out where we are and what services we are providing. Typically, this starts with salesforce, which often does not meet our needs because it does not actually let us know what is happening with a partner. Sometimes, we will do a google drive search and find something, but we aren't sure of it's accuracy. Inevitably, we reach out to a managing director, who reaches out to a district or regional director, who reaches out to the coach or associate serving that district. They go back up the ladder, and we get the best answer we can.
+
+Now, imagine this for the annual report... we need to find places to disrupt this process, and I hope that we can use the presentation today as a case study for all that can be learned when we do.
+:::
+
+## Case study in understanding implementation {.small}
+
+### The 23-24 Partnership Conditions Survey
+
+-   Each year, the Partnership Conditions survey is administered twice a year to monitor, assess, and reflect on the conditions of our full model school partners on their journey towards Credential-level impact in the Three Dimensions.
+-   This year, additional questions were added in order to better understand implementation of our products as well as facets of the full school model
+
+::: notes
+I want to use a recent initiative to highlight what was learned in collaboration with Ryan's team as we took advantage of a current survey to better understand implementation, and to think together at the end how we can build in further processes to do this at scale.
+:::
+
+## Goals for Additional Questions
+
+The [additional questions](https://docs.google.com/document/d/1e3-fhN2dl0YtyCdqJdg4lqsmGLcVzjgNtvWWmD31u6w/edit?usp=sharing) can be split into two buckets:
+
+-   Those centered on the implementation and interest in our products (e.g., K-2 Modules, 3-5 Modules, etc.)
+
+-   Those centered on different elements of the full school model (e.g., Student and Staff Crew, Learning Expeditions, etc.)
+
+::: notes
+There are two facets to our work: our instructional products, and our full school model. Being able to see the interplay between these products in our full school model schools is one place where we can start to see the system.
+
+I also note here that the questions were filled out by a coach, and so are not a direct measure of school interest or implementation. However, they are a good proxy for understanding the system.
+:::
+
+## Participation
+
+There were `r nrow(survey2)` responses to the survey. An Excel spreadsheet with the data can be found [here](https://docs.google.com/spreadsheets/d/1BYTsH8wo_TmjBYI3xDTvbrKQ9IPOfnTV/edit?usp=sharing&ouid=115863035483065703345&rtpof=true&sd=true).
+
+```{r}
+survey2 |>  
+  mutate(partnership_type=fct_lump_min(partnership_type, 2))  |>
+  count(partnership_type) |>  
+  gt() |> 
+  tab_header(
+    title = md("**23-24 Partnership Conditions MOY Survey**"),
+    subtitle = "Number of Responses by Partnership Type"
+  ) |> 
+  tab_options(column_labels.hidden = TRUE) |> 
+  tab_footnote(
+    footnote = md("*The majority of these are school-based coaching with the Bronx 11 District Partnership*"),
+    locations = cells_body(columns = partnership_type, rows = 3)) |> 
+  tab_footnote(
+    footnote=md("*Other primarily includes schools moving between curriculum and network services*"),
+    locations=cells_body(columns=partnership_type,rows=5)
+  ) |> 
+  tab_options(table.width = "100%",table.font.size = "70%")
+
+
+```
+
+::: notes
+It is good to call out the variation in Ryan's portfolio here. While the majority of schools were full model school partners, there were others who filled out the survey - in particular, the schools of Bronx 11 were a large part of the survey, and that data has been handed off to the members of the Research Team who support Advancing Equity work.
+
+It's also important to call out that there are more than 117 Full School Model schools - while this is the majority of the portfolio, it is not the entirety of it. If this data is important, we should come up with a way to systematically collect all of it.
+:::
+
+# Takeaways On Curriculum:
+
+::: incremental
+-   **High Curriculum Use within Full School Model Partners**
+-   **High Interest in Newer Products**
+:::
+
+::: notes
+We will be looking at a set of graphs that show the implementation of our curriculum in our full model school partners. The first takeaway is that the majority of our full model partners are implementing the curriculum in some form, especially within elementary school, where the majority of our schools are using the curriculum, and among the ones remaining, another large portion are interested in learning more.
+
+In addition, there are opportunities to target our newer products within our full school model schools, even those that target english language supports like Unlock ELD and Unlock Phonics.
+:::
+
+##  {.smaller data-menu-title="Elementary School Implementation"}
+
+```{r}
+survey2wholeschoolelementary <- survey2 |> 
+  filter(partnership_type=="Full Model School Partner" &
+           (`Lowest Grade` %in% c("Prekindergarten","KG","PK") | is.na(`Lowest Grade`))) %>%
+  select(school_or_district_name_organized_alphabetically,
+         team,
+         `Lowest Grade`:`Highest Grade`,
+         modules_k_2:x3_5,
+         skills_block_k_2:all_block_3_5) |> 
+  mutate(curriculum_use=case_when(!modules_k_2 %in% c("Not currently implementing","Not currently implementing, but interested") & !x3_5 %in% c("Not currently implementing","Not currently implementing, but interested") ~ TRUE,
+                                 .default=FALSE))
+survey2wholeschoolmiddle <- survey2 |> 
+  filter(partnership_type=="Full Model School Partner" &
+           !`Lowest Grade` %in% c("09") & 
+           !`Highest Grade` %in% c("02","03","05","06") &
+           !is.na(`Lowest Grade`)) |> 
+  select(school_or_district_name_organized_alphabetically,
+         team,
+         `Lowest Grade`:`Highest Grade`,
+         x6_8) |>
+  mutate(curriculum_use=case_when(!x6_8 %in% c("Not currently implementing","Not currently implementing, but interested") ~ TRUE,
+                                 .default=FALSE))
+```
+
+```{r}
+#| out.width: '100%'
+#| fig.align: 'center'
+survey2wholeschoolelementary  |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Modules k 2`:`X3 5`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don�\u0080\u0099t know if they are using this product")),
+         Value=case_when(is.na(Value) ~ "I don't know if they are using this product",
+                         .default=Value),
+         Value=factor(Value,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don't know if they are using this product")),
+         Component=case_when(Component=="Modules k 2" ~ "K-2 Modules",
+                             Component=="X3 5" ~ "3-5 Modules"),
+         Component=fct_inorder(Component)) %>%
+  ggplot(aes(x=fct_rev(Value),fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=2) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Elementary Full School Model Partners",
+       subtitle="Module implementation",
+       caption="John Russell, EL Education") +
+  el_theme() +
+  scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+
+`r round(nrow(survey2wholeschoolelementary |> filter(curriculum_use==TRUE))/nrow(survey2wholeschoolelementary)*100,1)`% of full model partners with elementary grades (n=`r nrow(survey2wholeschoolelementary)`) who filled out the Partnership Conditions are implementing the K-2 and/or 3-5 Modules
+
+::: notes
+Most schools with grades K through 5 are implementing our curriculum, and most of them are implementing it well. We asked coaches to not only tell us if they were implementing, but also to tell us if they were implementing with modifications that undercut the intent of the curriculum, or if they were implementing with modifications that were within the integrity of the curriculum. This is another way we can understand the system that produces the current outcomes.
+:::
+
+##  {.smaller data-menu-title="Middle School Implementation"}
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| fig.height: 9.5
+#| fig.align: 'center'
+survey2wholeschoolmiddle  |> 
+  clean_names(case="sentence") |> 
+  mutate(Value=factor(`X6 8`,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don�\u0080\u0099t know if they are using this product")),
+         Value=case_when(is.na(Value) ~ "I don't know if they are using this product",
+                         .default=Value),
+         Value=factor(Value,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don't know if they are using this product")))  |> 
+  ggplot(aes(x=fct_rev(Value),fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white',
+             size = 10,
+             aes(label = ..count..),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Middle Full School Model Partners",
+       subtitle="Module implementation",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f","#c7c7c7"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=18)) +
+  coord_flip()
+  
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| fig.height: 9.5
+#| fig.align: 'center'
+survey2wholeschoolmiddle  |> 
+  clean_names(case="sentence") |> 
+  mutate(Value=factor(`X6 8`,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don�\u0080\u0099t know if they are using this product")),
+         Value=case_when(is.na(Value) ~ "I don't know if they are using this product",
+                         .default=Value),
+         Value=factor(Value,levels=c("Not currently implementing",
+                                     "Not currently implementing, but interested",
+                                     "Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum",
+                                     "I don't know if they are using this product")))  |> 
+  mutate(Value=fct_collapse(Value,
+                           "Implementing"=c("Implementing, with modifications that modify the curriculum in ways that  undercut their intent",
+                                     "Implementing, with no modifications",
+                                     "Implementing, with modifications that are within the integrity of the curriculum"),
+                           "Not Implementing"=c("Not currently implementing",
+                                     "Not currently implementing, but interested")))  |>
+  ggplot(aes(x=fct_rev(Value),fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white',
+             size = 10,
+             aes(label = ..count..),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Middle Full School Model Partners",
+       subtitle="Module implementation - Categories Collapsed",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#c6123f","#c7c7c7"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=18)) +
+  coord_flip()
+  
+```
+:::
+:::
+
+`r round(nrow(survey2wholeschoolmiddle |> filter(curriculum_use==TRUE))/nrow(survey2wholeschoolmiddle)*100,1)`% of full model partners with middle school grades (n=`r nrow(survey2wholeschoolmiddle)`) who filled out the Partnership Conditions are implementing the 6-8 Modules (the figure on the right is a collapsed version of the one on the left)
+
+::: notes
+Interestingly, in middle school, we still have the majority of schools implementing the curriculum, as shown on the right. However, our coaches feel as if most of them are implementing with modifications that are not within the integrity of the curriculum. It may be interesting to compare this with what you all have seen in districts - are there greater issues implementing in middle school, and why?
+:::
+
+```{r}
+#| out.height: '50%'
+#| include: FALSE
+survey2 %>%
+  filter(school_or_district_name_organized_alphabetically %in% survey2wholeschoolelementary$school_or_district_name_organized_alphabetically |
+           school_or_district_name_organized_alphabetically %in% survey2wholeschoolmiddle$school_or_district_name_organized_alphabetically) |>
+  mutate(school_or_district_name_organized_alphabetically = case_when(school_or_district_name_organized_alphabetically=="City Schools of Decatur" ~ if_you_selected_i_dont_see_my_partner_on_this_list_please_enter_the_partner_below,
+         .default=school_or_district_name_organized_alphabetically)) |>
+  select(school_or_district_name_organized_alphabetically,
+         team,
+         modules_k_2:x6_8) |> 
+  clean_names(case="sentence") |>
+  datatable(options=list(autoWidth=TRUE, paging=FALSE, scrollY=390),
+            colnames=c('School','Team','K-2','3-5','6-8')) |> 
+  formatStyle(columns = c(1, 2, 3, 4, 5), fontSize = '50%')
+  
+```
+
+##  {.smaller data-menu-title="Interest in Newer Products"}
+
+```{r}
+survey2  |> 
+  filter(partnership_type=="Full Model School Partner") |> 
+  clean_names(case="sentence") |> 
+  select(`Unlock phonics`:`Crew curriculum`) |> 
+  pivot_longer(cols=c(`Unlock phonics`:`Crew curriculum`),
+               names_to="Component",
+               values_to="Value") |> 
+  mutate(Component=case_when(Component=="Unlock phonics" ~ "Unlock Phonics",
+                             Component=="Unlock eld" ~ "Unlock ELD",
+                             Component=="Crew curriculum" ~ "Crew Curriculum")) |> 
+  filter(Value=="Not currently implementing, but interested") |> 
+  ggplot(aes(x=Component)) + geom_histogram(stat="count", fill="#211651") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 20)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = ..count..),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Full School Partner Interest in Newer Products",
+       subtitle="117 Schools Listed",
+       caption="John Russell, EL Education") +
+  el_theme() +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     axis.text=element_text(size=9)) +
+  coord_flip()
+```
+
+Many partners have expressed interest, and could be candidates for, the rollout of some of our newer products, especially the Crew Curriculum and Unlock Phonics.
+
+::: notes
+We also asked about our newer products. Interestingly, while one would expect the Crew Curriculum to be of greatest interest to our full model schools, supports in elementary school for Unlock Phonics and Unlock ELD are not that far behind.
+:::
+
+# Takeaways On Implementation: {.smaller}
+
+::: incremental
+-   There are 3 levels of use
+
+    1.  Those items where all partners are using, and most are using adeptly (e.g., core practices)
+
+    2.  Those items where most partners are using, albeit with a high degree of variance. These are great foci for coaches, or for school to school mentoring.
+
+    3.  Learning expeditions, which not only have a high degree of variance, but also partners that are not implementing and are not interested in implementing.
+
+-   Models of Excellence and Passage Presentations have a high number of partners that want to learn more, and could be great candidates for website case studies. Expeditions also have a number of partners interested.
+:::
+
+::: notes
+When we looked at the implementation of certain practices, we saw three levels of use. The first level is where all partners are using, and most are using adeptly. The second level is where many partners are still learning, or some partners are still aiming to use. These are great foci for coaches.
+
+Finally, I see Models of Excellence and Passage Presentations as a little special, as they have a high number of partners that want to learn more, and could be great foci for website case studies.
+
+The last thing I'll note is that every number represents a number of schools. So we can further explore this by pulling out the schools that are using a practice with mastery, and seeing what they are doing differently.
+:::
+
+##  {.smaller data-menu-title="High Implementation Practices"}
+
+```{r}
+#| out.width: '100%'
+#| fig.height: 6
+#| fig.align: 'center'
+survey2  |>
+  filter(partnership_type=="Full Model School Partner") |>
+  select(student_crew_as_a_structure_and_culture_at_the_school:leadership_team_structure_that_cultivates_a_positive_culture_and_promotes_shared_leadership) |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Student crew as a structure and culture at the school`:`Leadership team structure that cultivates a positive culture and promotes shared leadership`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("1: Not currently using, with no interest in using",
+                                     "2: Not currently using, but interested in learning how to use",
+                                     "3: Beginning to use or using with some issues",
+                                     "4: Using, with some mastery",
+                                     "5: Using, with mastery")),
+         Component=fct_inorder(Component)) %>%
+  filter(Component %in% c("A focus on use of the el core practices",
+                          "Habits of character and or habits of scholarship as a structure and culture at the school for students and adults",
+                          "Staff crew as a structure and culture for adults within the school",
+                          "Strategic planning at the school level focused on the school s workplan",
+                          "Student crew as a structure and culture at the school",
+                          "Student led conferences")) |>
+  mutate(Component=case_when(Component=="A focus on use of the el core practices" ~ "A focus on use of the EL core practices",
+                             Component=="Strategic planning at the school level focused on the school s workplan" ~ "Strategic planning at the school level focused on the school's workplan",
+                             .default=Component)) |>
+  mutate(Component=str_wrap(Component, width = 30)) |> 
+  ggplot(aes(x=Value, fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=3) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 33)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Bright Spots",
+       subtitle="Practices where nearly all partners are using, and most are using adeptly",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+
+::: notes
+It is worthwhile to call out that nearly every school is using the EL Core practices, embedding the Habits of character and scholarship, and leading staff and student crew.
+:::
+
+##  {.smaller data-menu-title="High Variance Practices"}
+
+```{r}
+#| out.width: '100%'
+#| fig.height: 6
+#| fig.align: 'center'
+survey2  |>
+  filter(partnership_type=="Full Model School Partner") |>
+  select(student_crew_as_a_structure_and_culture_at_the_school:leadership_team_structure_that_cultivates_a_positive_culture_and_promotes_shared_leadership) |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Student crew as a structure and culture at the school`:`Leadership team structure that cultivates a positive culture and promotes shared leadership`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("1: Not currently using, with no interest in using",
+                                     "2: Not currently using, but interested in learning how to use",
+                                     "3: Beginning to use or using with some issues",
+                                     "4: Using, with some mastery",
+                                     "5: Using, with mastery")),
+         Component=fct_inorder(Component)) %>%
+  filter(Component %in% c("Continuous improvement for equity grounded in the implementation review",
+                          "Leadership team structure that cultivates a positive culture and promotes shared leadership",
+                          "Use of teacher and peer feedback to iterate upon and satisfy the authenticity complexity and craftsmanship attributes of high quality work")) |>
+  mutate(Component=str_wrap(Component, width = 25)) |> 
+  ggplot(aes(x=Value,fill=Value)) + geom_histogram(stat="count",show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=3) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Practices with a high variance",
+       subtitle="Practices where most partners are using, with a high amount of variation",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+
+::: notes
+In this batch, it's useful to still see that most schols are implementing, but there are fewer schools that are implementing these practices with mastery. This is a great place for coaches to focus.
+:::
+
+##  {.smaller data-menu-title="Non-implementation of Learning Expeditions"}
+
+```{r}
+#| out.width: '100%'
+#| fig.height: 5
+#| fig.align: 'center'
+survey2  |>
+  filter(partnership_type=="Full Model School Partner") |>
+  select(student_crew_as_a_structure_and_culture_at_the_school:leadership_team_structure_that_cultivates_a_positive_culture_and_promotes_shared_leadership) |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Student crew as a structure and culture at the school`:`Leadership team structure that cultivates a positive culture and promotes shared leadership`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("1: Not currently using, with no interest in using",
+                                     "2: Not currently using, but interested in learning how to use",
+                                     "3: Beginning to use or using with some issues",
+                                     "4: Using, with some mastery",
+                                     "5: Using, with mastery")),
+         Component=fct_inorder(Component)) %>%
+  filter(Component %in% c("Learning expeditions as an extension of ela curriculum",
+                          "Learning expeditions not based on modules in other or across subjects")) |>
+  mutate(Component=case_when(Component=="Learning expeditions as an extension of ela curriculum" ~ "Learning expeditions as an extension of ELA curriculum",
+                             .default=Component),
+         Component=str_wrap(Component, width = 30)) |> 
+  ggplot(aes(x=Value,fill=Value)) + geom_histogram(stat="count", show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=3) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Learning Expeditions",
+       subtitle="Practices with a high variance and partners that are not implementing",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+
+::: notes
+Learning expeditions show an interesting trend. Within schools using the curriculum, many are using with issues and only a few are using with mastery. Within schools that look to expeditionize outside of the curriculum, there seems to be greater mastery. At each level, there are schools that are not interested, and schools with great interest that don't know how to proceed.
+
+I know that Penny is working on a roadmap for full school model implementation, and this graph makes me wonder where expeditions are on that journey.
+:::
+
+##  {data-menu-title="High Interest Practices Not Being Implemented"}
+
+```{r}
+#| out.width: '100%'
+#| fig.height: 6
+#| fig.align: 'center'
+survey2  |>
+  filter(partnership_type=="Full Model School Partner") |>
+  select(student_crew_as_a_structure_and_culture_at_the_school:leadership_team_structure_that_cultivates_a_positive_culture_and_promotes_shared_leadership) |> 
+  clean_names(case="sentence") |> 
+  pivot_longer(cols=`Student crew as a structure and culture at the school`:`Leadership team structure that cultivates a positive culture and promotes shared leadership`,
+               names_to="Component",
+               values_to="Value") %>%
+  mutate(Value=factor(Value,levels=c("1: Not currently using, with no interest in using",
+                                     "2: Not currently using, but interested in learning how to use",
+                                     "3: Beginning to use or using with some issues",
+                                     "4: Using, with some mastery",
+                                     "5: Using, with mastery")),
+         Component=fct_inorder(Component)) %>%
+  filter(Component %in% c("Preparation and submission of student work to models of excellence",
+                          "Passage presentations for students going from one school level to the next")) |>
+  mutate(Component=case_when(Component=="Preparation and submission of student work to models of excellence" ~ "Preparation and submission of student work to Models of Excellence",
+                             .default=Component),
+         Component=str_wrap(Component, width = 30)) |> 
+  ggplot(aes(x=Value,fill=Value)) + geom_histogram(stat="count",show.legend=FALSE) + facet_wrap(~Component,scales="fixed", ncol=2) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 25)) +
+  stat_count(geom = 'text', 
+             color = 'white', 
+             aes(label = after_stat(count)),
+           position = position_stack(vjust = 0.5)) +
+  labs(title="Passage Presentations and Models of Excellence",
+       subtitle="Practices with a high interest on the part of partners (possible case studies)",
+       caption="John Russell, EL Education") +
+  el_theme() + scale_fill_manual(values=c("#c7c7c7","#211651","#c6123f","#c6123f","#c6123f"), aesthetics="fill") +
+  theme(strip.text.y=element_blank(),
+                     axis.title=element_blank(),
+                     panel.border = element_rect(color = "black", fill = NA, size = 1),
+                     legend.text=element_text(size=14),
+                     strip.text=element_text(size=16),
+                     axis.text=element_text(size=8)) +
+  coord_flip()
+  
+```
+
+::: notes
+I wanted to end with the ones I saw as particularly interesting for case studies because the image of a student graduating from one level to the next is a powerful one, and to also showcase how powerful Models of Excellence can be as a driver of student achievement.
+:::
+
+## Where to next?
+
+-   Much of the focus of learning in these slides was on the `r nrow(survey2 |> filter(partnership_type=="Full Model School Partner"))` Full Model School Partners, which are a large portion but not the entirety of our full model school partners.
+-   There are two other projects that start to extend this work to districts
+    -   The first is using this survey to specifically look at the Bronx 11 District Partnership
+    -   The second is a district initiative we are heading to understand implementation in each individual district partnership
+
+::: notes
+Using the survey in this fashion is an imperfect, but fruitful means to an end, and I note here that there are other projects that we are working on to understanding implementation Partnership-wide. However, these systems are imperfect, and I'd like to use this time to understand how we can better understand our implementation.
+:::
+
+## Pointing to Process
+
+::: columns
+::: {.column width="75%"}
+3.  *See the system that produces the current outcomes.*
+4.  *We cannot improve at scale what we cannot measure.*
+:::
+
+::: {.column width="25%"}
+![](Bryk.jpg)
+:::
+:::
+
+## Where can we disrupt this process? {.smaller}
+
+```{mermaid}
+%%| mermaid-format: png
+flowchart LR
+    A[Research Team] -.-> E(Salesforce - No Answer)
+    style A fill:#c6123f,color:#fff
+    A -.-> F(Finds a sheet in Google Drive... Is it accurate?)
+    A <--> B{Managing Director}
+    G <--> C(Coach)
+    G <--> D(Associate)
+    B <--> G(Director)
+```
+
+**In the [jamboard](https://jamboard.google.com/d/1gpcIDmFxlH8fzL3F99MWlQ0ey8NHMa-D94YlDmHuGng/edit?usp=sharing), please consider the following:**
+
+-   What ideas do you have for how we can have a better understanding of what services we provide and to whom?
+
+-   How can we better 'see the system that produces the current outcomes'?
+
+::: notes
+I hope that you found value in all of these insights. I'd like to spend the rest of our time considering how we can have a better process in place for our implementation.
+:::
